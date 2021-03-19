@@ -10,6 +10,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+require_once plugin_dir_path( __FILE__ ) . 'autoloader.php';                // Autoloader
 require_once plugin_dir_path( __FILE__ ) . 'CleantalkLog.php';
 
 // Activation of the plugin
@@ -67,6 +68,12 @@ if ( in_array( 'cleantalk-spam-protect/cleantalk.php', apply_filters( 'active_pl
 	// do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
 	
 	function do_logging( $file, $post ) {
+	    
+	    $debugger = new \Cleantalk\Debug\BacktraceAnalyzer( debug_backtrace(), WP_PLUGIN_DIR );
+        $func = $debugger
+            ->selectElementByArgumentValue( 'apbct_skipped_request' )
+            ->current;
+            
 		CleantalkLog::get_logger()->add_record(
 			$file,
 			array(
